@@ -1,0 +1,16 @@
+from ..repository import ActivitiesRepo
+
+
+def get_category_ids(
+    repo: ActivitiesRepo,
+    user_id: str = 'stevebot'
+) -> dict:
+    ids = repo.get_category_ids(user_id)
+    return {'categories': ids}
+
+def get_category_activities(
+    repo: ActivitiesRepo,
+    category_id: str
+) -> dict:
+    activities = repo.get_category_activities(category_id)
+    return {'id': category_id, 'activities': activities}
