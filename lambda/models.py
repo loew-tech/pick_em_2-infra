@@ -4,6 +4,7 @@ from typing import TypedDict
 
 
 class ActivityDict(TypedDict):
+    activity_id: str
     name: str
     category: str
     interest: int
@@ -31,6 +32,7 @@ class Activity:
         interest: User's interest level.
         effort: Required effort level.
     """
+    activity_id: str
     name: str
     category: str
     interest: Tier
@@ -39,11 +41,21 @@ class Activity:
     @classmethod
     def from_dict(cls, d: ActivityDict) -> 'Activity':
         return cls(
+            activity_id=d['activity_id'],
             name=d['name'],
             category=d['category'],
             interest=Tier(d['interest']),
             effort=Tier(d['effort']),
         )
+
+    def to_dynamo(self) -> dict:
+        return {
+            ACTIVITY_ID: self.activity_id,
+            "category_id": self.category,
+            "name": self.name,
+            "interest": self.interest.value,
+            "effort": self.effort.value,
+        }
 
 
 @dataclass(frozen=True)
