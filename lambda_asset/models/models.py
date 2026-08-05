@@ -50,7 +50,7 @@ class Activity:
             effort=Tier(d['effort']),
         )
 
-    def to_dynamo(self) -> dict:
+    def to_dict(self) -> dict:
         return {
             ACTIVITY_ID: self.activity_id,
             CATEGORY_ID: self.category,

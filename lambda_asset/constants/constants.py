@@ -1,10 +1,7 @@
-# Category
+# # Category
 CATEGORY = 'category'
-CHOICES = 'choices'
-CATEGORIES = 'categories'
 
 # Activity
-# OPTION = 'Option'
 ACTIVITY = 'activity'
 ACTIVITY_ID = "activity_id"
 NAME = "name"
@@ -12,18 +9,36 @@ CATEGORY_ID = 'category_id'
 INTEREST = 'interest'
 EFFORT = 'effort'
 
-LOW = 'low'
-MEDIUM = 'medium'
-HIGH = 'high'
+# Handlers
+ACTIVITIES = 'activities'
+CATEGORIES = 'categories'
+ID = "id"
 
-TIERS = (LOW, MEDIUM, HIGH)
-WEIGHTS = dict(zip(TIERS, [1, 3, 12]))
+# Resources
+CATEGORIES_PATH = '/categories'
+ACTIVITIES_PATH = '/activities'
 
 # DB
+DYNAMO_RESOURCE = 'dynamodb'
+PICK_EM_TABLE_2 = "PickEmTable2"
 PK = 'PK'
 SK = 'SK'
 USER_ID = 'user_id'
-# CREATED_AT = 'created_at'
-
-# AWS
 ITEMS = 'Items'
+
+# API GATEWAY
+REQUEST_CONTEXT = "requestContext"
+HTTP_STR = "http"
+METHOD = "method"
+PATH_STR = "path"
+PATH_PARAMETERS = "pathParameters"
+BODY = "body"
+
+# OS
+TABLE_NAME = "TABLE_NAME"
+
+# HTTP
+STATUS_CODE = "statusCode"
+HEADERS = "headers"
+CONTENT_TYPE = "Content-Type"
+APPLICATION_JSON = "application/json"

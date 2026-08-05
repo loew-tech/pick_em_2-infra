@@ -10,7 +10,7 @@ class ActivitiesRepo:
     def __init__(self, table):
         self._table = table
 
-    def get_category_ids(self) -> list[str]:
+    def get_category_ids(self, user_id: str) -> list[str]:
         response = self._table.query(
             KeyConditionExpression=Key(PK).eq(f'USER#{user_id}'),
             ProjectionExpression=CATEGORY_ID,
@@ -29,7 +29,7 @@ class ActivitiesRepo:
         item = {
             PK: f'USER#{user_id}',
             SK: f'CATEGORY#{activity.category}#ACTIVITY#{activity.activity_id}',
-            **activity.to_dynamo()
+            **activity.to_dict()
         }
         self._table.put_item(item)
 
