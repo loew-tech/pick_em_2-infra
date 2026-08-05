@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import TypedDict
 
+from constants import *
+
 
 class ActivityDict(TypedDict):
     activity_id: str
@@ -17,8 +19,8 @@ class CategoryDict(TypedDict):
 
 class Tier(IntEnum):
     LOW = 1
-    MEDIUM = 3
-    HIGH = 12
+    MEDIUM = 2
+    HIGH = 3
 
 
 @dataclass(frozen=True)
@@ -51,10 +53,10 @@ class Activity:
     def to_dynamo(self) -> dict:
         return {
             ACTIVITY_ID: self.activity_id,
-            "category_id": self.category,
-            "name": self.name,
-            "interest": self.interest.value,
-            "effort": self.effort.value,
+            CATEGORY_ID: self.category,
+            NAME: self.name,
+            INTEREST: self.interest.value,
+            EFFORT: self.effort.value,
         }
 
 
@@ -74,3 +76,8 @@ class Category:
     @classmethod
     def from_dict(cls, d: CategoryDict) -> 'Category':
         return cls(id=d['id'])
+
+@dataclass(frozen=True)
+class Pick:
+    name: str
+    category: str
