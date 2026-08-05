@@ -1,8 +1,8 @@
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 
-from constants import *
-from models import Activity, Tier
+from constants.constants import *
+from models.models import Activity, Tier
 
 
 class ActivitiesRepo:

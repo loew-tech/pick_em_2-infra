@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
-from models import Activity
-from repository import ActivitiesRepo
+from models.models import Activity
+from repository.activities import ActivitiesRepo
 
 
 def get_category_ids(

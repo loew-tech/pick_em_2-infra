@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import TypedDict
 
-from constants import *
+from constants.constants import *
 
 
 class ActivityDict(TypedDict):

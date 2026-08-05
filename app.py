@@ -3,7 +3,7 @@ import os
 
 import aws_cdk as cdk
 
-from pick_em_2.pick_em_2_stack import PickEm2Stack
+from infrastructure.stack import PickEm2Stack
 
 
 app = cdk.App()
