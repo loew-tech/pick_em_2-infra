@@ -17,6 +17,7 @@ ID = "id"
 # Resources
 CATEGORIES_PATH = '/categories'
 ACTIVITIES_PATH = '/activities'
+PICK_PATH = '/pick'
 
 # DB
 DYNAMO_RESOURCE = 'dynamodb'

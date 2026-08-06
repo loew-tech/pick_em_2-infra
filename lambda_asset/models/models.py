@@ -43,11 +43,11 @@ class Activity:
     @classmethod
     def from_dict(cls, d: ActivityDict) -> 'Activity':
         return cls(
-            activity_id=d['activity_id'],
-            name=d['name'],
-            category=d['category'],
-            interest=Tier(d['interest']),
-            effort=Tier(d['effort']),
+            activity_id=d[ACTIVITY_ID],
+            name=d[NAME],
+            category=d[CATEGORY],
+            interest=Tier(d[INTEREST]),
+            effort=Tier(d[EFFORT]),
         )
 
     def to_dict(self) -> dict:
@@ -75,9 +75,16 @@ class Category:
 
     @classmethod
     def from_dict(cls, d: CategoryDict) -> 'Category':
-        return cls(id=d['id'])
+        return cls(id=d[ID])
+
 
 @dataclass(frozen=True)
 class Pick:
     name: str
     category: str
+
+    def to_dict(self) -> dict:
+        return {
+            NAME: self.name,
+            CATEGORY: self.category,
+        }

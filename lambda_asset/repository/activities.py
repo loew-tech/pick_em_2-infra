@@ -25,6 +25,12 @@ class ActivitiesRepo:
         return sorted((Activity.from_dict(item) for item in response.get(ITEMS, ())),
                       key=lambda activity: activity.name)
 
+    def get_activities(self, user_id: str, category_ids: list[str]) -> list[Activity]:
+        activities = []
+        for category_id in category_ids:
+            activities.extend(self.get_category_activities(user_id, category_id))
+        return activities
+
     def add_activity(self, user_id: str, activity: Activity) -> None:
         item = {
             PK: f'USER#{user_id}',

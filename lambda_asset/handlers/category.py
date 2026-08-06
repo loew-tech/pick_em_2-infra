@@ -1,7 +1,6 @@
 from http import HTTPStatus
 
 from constants.constants import ACTIVITIES, CATEGORIES, ID
-from models.models import Activity
 from repository.activities import ActivitiesRepo
 
 

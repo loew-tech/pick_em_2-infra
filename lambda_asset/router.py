@@ -7,6 +7,7 @@ from collections.abc import Callable
 from constants.constants import *
 from handlers.activity import add_activity, edit_activity, remove_activity
 from handlers.category import get_category_ids, get_category_activities
+from handlers.pick import get_pick
 from repository.activities import ActivitiesRepo
 
 
@@ -32,6 +33,12 @@ def router(activity_repo: ActivitiesRepo) -> Router:
                                         category_id=params[CATEGORY_ID],
                                         name=params[NAME],
                                         body=json.loads(event[BODY]))
+        elif method == HTTPMethod.POST and path == PICK_PATH:
+            body, status = get_pick(
+                repo=activity_repo,
+                user_id=user_id,
+                body=json.loads(event[BODY])
+            )
         elif method == HTTPMethod.PUT and f'{ACTIVITIES_PATH}/' in path:
             params = event[PATH_PARAMETERS]
             body, status = edit_activity(repository=activity_repo,
