@@ -3,6 +3,7 @@ from http import HTTPMethod, HTTPStatus
 from unittest.mock import MagicMock, patch
 
 from lambda_asset.router import router
+from models.models import Tier
 from tests.helpers import api_gateway_event
 
 
@@ -225,6 +226,62 @@ class TestRouter(unittest.TestCase):
         self.assertEqual(
             body,
             {"msg": "ROUTE NOT FOUND"},
+        )
+
+    @patch(
+        "lambda_asset.router._get_user_id",
+        return_value="user123",
+    )
+    @patch("lambda_asset.router.get_pick")
+    def test_get_pick(
+            self,
+            get_pick,
+            _get_user_id,
+    ):
+        get_pick.return_value = (
+            {
+                "name": "Watch Dune",
+                "category": "movies",
+            },
+            HTTPStatus.OK,
+        )
+
+        event = api_gateway_event(
+            HTTPMethod.POST,
+            "/pick",
+            body={
+                "categories": [
+                    "movies",
+                    "games",
+                ],
+                "interest": Tier.MEDIUM.value,
+                "effort": Tier.HIGH.value,
+            },
+        )
+
+        body, status = self.router(event)
+
+        self.assertEqual(status, HTTPStatus.OK)
+
+        self.assertEqual(
+            body,
+            {
+                "name": "Watch Dune",
+                "category": "movies",
+            },
+        )
+
+        get_pick.assert_called_once_with(
+            repo=self.repo,
+            user_id="user123",
+            body={
+                "categories": [
+                    "movies",
+                    "games",
+                ],
+                "interest": Tier.MEDIUM.value,
+                "effort": Tier.HIGH.value,
+            },
         )
 
 if __name__ == "__main__":

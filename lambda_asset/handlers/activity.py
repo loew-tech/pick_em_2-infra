@@ -60,11 +60,6 @@ def edit_activity(
     if EFFORT not in updates or INTEREST not in updates:
         return {"msg": "interest or effort"}, HTTPStatus.BAD_REQUEST
 
-    if not updates:
-        return {
-            "msg": "no changes provided"
-        }, HTTPStatus.BAD_REQUEST
-
     updated = repository.update_activity(
         user_id=user_id,
         category_id=category_id,

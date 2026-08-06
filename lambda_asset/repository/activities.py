@@ -3,11 +3,12 @@ from botocore.exceptions import ClientError
 
 from constants.constants import *
 from models.models import Activity, Tier
+from repository.types import DynamoTable
 
 
 class ActivitiesRepo:
 
-    def __init__(self, table):
+    def __init__(self, table: DynamoTable):
         self._table = table
 
     def get_category_ids(self, user_id: str) -> list[str]:
@@ -32,12 +33,13 @@ class ActivitiesRepo:
         return activities
 
     def add_activity(self, user_id: str, activity: Activity) -> None:
-        item = {
-            PK: f'USER#{user_id}',
-            SK: f'CATEGORY#{activity.category}#ACTIVITY#{activity.activity_id}',
-            **activity.to_dict()
-        }
-        self._table.put_item(item)
+        self._table.put_item(
+            Item={
+                PK: f"USER#{user_id}",
+                SK: f"CATEGORY#{activity.category}#ACTIVITY#{activity.activity_id}",
+                **activity.to_dict(),
+            }
+        )
 
     def update_activity(
             self,

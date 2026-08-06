@@ -50,10 +50,10 @@ class Activity:
             effort=Tier(d[EFFORT]),
         )
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> ActivityDict:
         return {
             ACTIVITY_ID: self.activity_id,
-            CATEGORY_ID: self.category,
+            CATEGORY: self.category,
             NAME: self.name,
             INTEREST: self.interest.value,
             EFFORT: self.effort.value,
