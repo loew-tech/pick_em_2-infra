@@ -4,7 +4,7 @@ from botocore.exceptions import ClientError
 from constants.constants import *
 from models.models import Activity, Tier
 from repository.types import DynamoTable
-from repository.exceptions import RepositoryError, ItemNotFoundError
+from repository.exceptions import RepositoryError
 
 
 class ActivitiesRepo:
@@ -50,7 +50,7 @@ class ActivitiesRepo:
                 }
             )
         except ClientError as exc:
-            raise RepositoryError(f"Failed to retrieve activity for {user_id}.") from exc
+            raise RepositoryError(f"Failed to add activity for {user_id}.") from exc
 
     def update_activity(
             self,
@@ -86,7 +86,12 @@ class ActivitiesRepo:
                 ConditionExpression="attribute_exists(PK)",
             )
         except ClientError as exc:
-            raise RepositoryError(f"Failed to update activity for {user_id}.") from exc
+            if exc.response["Error"]["Code"] == "ConditionalCheckFailedException":
+                return False
+
+            raise RepositoryError(
+                f"Failed to update activity for {user_id}."
+            ) from exc
 
         return True
 
