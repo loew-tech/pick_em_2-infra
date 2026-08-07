@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from constants.constants import ACTIVITIES, CATEGORIES, ID
+from common.constants.constants import ACTIVITIES, CATEGORIES, ID
 from repository.activities import ActivitiesRepo
 
 

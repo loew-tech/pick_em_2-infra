@@ -1,7 +1,7 @@
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 
-from constants.constants import *
+from common.constants.constants import *
 from models.models import Activity, Tier
 from repository.types import DynamoTable
 from repository.exceptions import RepositoryError

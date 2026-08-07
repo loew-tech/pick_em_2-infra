@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
-from constants.constants import *
-from models.models import Pick, Tier
+from common.constants.constants import *
+from models.models import Tier
 from repository.activities import ActivitiesRepo
 from services.pick import pick
 

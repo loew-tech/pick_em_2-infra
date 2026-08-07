@@ -2,7 +2,7 @@ import unittest
 from http import HTTPStatus
 from unittest.mock import MagicMock
 
-from constants.constants import ACTIVITIES, CATEGORIES, ID
+from common.constants.constants import ACTIVITIES, CATEGORIES, ID
 from handlers.category import (
     get_category_activities,
     get_category_ids,

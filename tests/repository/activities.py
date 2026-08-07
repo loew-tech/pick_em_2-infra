@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 from botocore.exceptions import ClientError
 
-from constants.constants import (
+from common.constants.constants import (
     CATEGORY,
     CATEGORY_ID,
     EFFORT,

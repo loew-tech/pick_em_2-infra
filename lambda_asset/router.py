@@ -4,7 +4,7 @@ from typing import Any
 from collections.abc import Callable
 
 
-from constants.constants import *
+from common.constants.constants import *
 from handlers.activity import add_activity, edit_activity, remove_activity
 from handlers.category import get_category_ids, get_category_activities
 from handlers.pick import get_pick
