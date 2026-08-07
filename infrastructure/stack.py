@@ -1,19 +1,16 @@
-from aws_cdk import (
-    # Duration,
-    Stack,
-    # aws_sqs as sqs,
-)
+from aws_cdk import Stack
 from constructs import Construct
+
+from infrastructure.constructs.activities_table import ActivitiesTable
+from infrastructure.constructs.pick_em_lambda import PickEmLambda
+
 
 class PickEm2Stack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # The code that defines your stack goes here
+        activities_table = ActivitiesTable(self, 'ActivitiesTable')
+        self.pick_em_lambda = PickEmLambda(self, 'PickEmLambda', activities_table=activities_table.table)
 
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "PickEm2Queue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
+
