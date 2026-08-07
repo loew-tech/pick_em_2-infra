@@ -26,7 +26,8 @@ class PickEmLambda(Construct):
             code=lambda_.Code.from_asset("lambda_asset"),
             environment={
                 PICK_EM_TABLE_2: activities_table.table_name,
-            }
+            },
+            reserved_concurrent_executions=3
         )
 
         activities_table.grant_read_write_data(self.function)
