@@ -4,6 +4,7 @@ from botocore.exceptions import ClientError
 from constants.constants import *
 from models.models import Activity, Tier
 from repository.types import DynamoTable
+from repository.exceptions import RepositoryError, ItemNotFoundError
 
 
 class ActivitiesRepo:
@@ -12,17 +13,24 @@ class ActivitiesRepo:
         self._table = table
 
     def get_category_ids(self, user_id: str) -> list[str]:
-        response = self._table.query(
-            KeyConditionExpression=Key(PK).eq(f'USER#{user_id}'),
-            ProjectionExpression=CATEGORY_ID,
-        )
+        try:
+            response = self._table.query(
+                KeyConditionExpression=Key(PK).eq(f'USER#{user_id}'),
+                ProjectionExpression=CATEGORY_ID,
+            )
+        except ClientError as exc:
+            raise RepositoryError(f"Failed to retrieve category IDs for {user_id}.") from exc
 
         return sorted({item[CATEGORY_ID] for item in response.get(ITEMS, ())})
 
     def get_category_activities(self, user_id: str, category_id: str) -> list[Activity]:
-        response = self._table.query(
-            KeyConditionExpression=(Key(PK).eq(f'USER#{user_id}') & Key(SK).begins_with(f'CATEGORY#{category_id}#'))
-        )
+        try:
+            response = self._table.query(
+                KeyConditionExpression=(Key(PK).eq(f'USER#{user_id}') & Key(SK).begins_with(f'CATEGORY#{category_id}#'))
+            )
+        except ClientError as exc:
+            raise RepositoryError(f"Failed to retrieve activities for category {category_id} for {user_id}.") from exc
+
         return sorted((Activity.from_dict(item) for item in response.get(ITEMS, ())),
                       key=lambda activity: activity.name)
 
@@ -33,13 +41,16 @@ class ActivitiesRepo:
         return activities
 
     def add_activity(self, user_id: str, activity: Activity) -> None:
-        self._table.put_item(
-            Item={
-                PK: f"USER#{user_id}",
-                SK: f"CATEGORY#{activity.category}#ACTIVITY#{activity.activity_id}",
-                **activity.to_dict(),
-            }
-        )
+        try:
+            self._table.put_item(
+                Item={
+                    PK: f"USER#{user_id}",
+                    SK: f"CATEGORY#{activity.category}#ACTIVITY#{activity.activity_id}",
+                    **activity.to_dict(),
+                }
+            )
+        except ClientError as exc:
+            raise RepositoryError(f"Failed to retrieve activity for {user_id}.") from exc
 
     def update_activity(
             self,
@@ -74,15 +85,15 @@ class ActivitiesRepo:
                 ExpressionAttributeValues=values,
                 ConditionExpression="attribute_exists(PK)",
             )
-
         except ClientError as exc:
-            if exc.response["Error"]["Code"] == "ConditionalCheckFailedException":
-                return False
-            raise
+            raise RepositoryError(f"Failed to update activity for {user_id}.") from exc
 
         return True
 
     def delete_activity(self, user_id: str, category_id: str, activity_id: str) -> None:
-        self._table.delete_item(
-            Key={PK: f'USER#{user_id}', SK: f'CATEGORY#{category_id}#ACTIVITY#{activity_id}'},
-        )
+        try:
+            self._table.delete_item(
+                Key={PK: f'USER#{user_id}', SK: f'CATEGORY#{category_id}#ACTIVITY#{activity_id}'},
+            )
+        except ClientError as exc:
+            raise RepositoryError(f"Failed to delete activity for {user_id}.") from exc
