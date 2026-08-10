@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-from common.constants.constants import *
 from models.models import Tier
 from repository.activities import ActivitiesRepo
 from services.pick import pick

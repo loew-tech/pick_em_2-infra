@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 from botocore.exceptions import ClientError
 
-from common.constants.constants import (
+from constants.constants import (
     CATEGORY,
     CATEGORY_ID,
     EFFORT,
@@ -15,6 +15,7 @@ from common.constants.constants import (
 )
 from models.models import Activity, Tier
 from repository.activities import ActivitiesRepo
+from repository.exceptions import RepositoryError
 
 
 class TestActivitiesRepo(unittest.TestCase):
@@ -269,7 +270,7 @@ class TestActivitiesRepo(unittest.TestCase):
             "UpdateItem",
         )
 
-        with self.assertRaises(ClientError):
+        with self.assertRaises(RepositoryError):
             self.repo.update_activity(
                 "steve",
                 "movies",

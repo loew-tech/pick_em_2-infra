@@ -4,7 +4,7 @@ from http import HTTPStatus
 
 import boto3
 
-from common.constants.constants import (
+from constants import (
     APPLICATION_JSON,
     BODY,
     CONTENT_TYPE,

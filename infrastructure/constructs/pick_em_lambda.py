@@ -4,8 +4,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-from common.constants.constants import PICK_EM_TABLE_2
-
+from infrastructure.config_constants.constants import PICK_EM_TABLE_2
 
 class PickEmLambda(Construct):
     """
@@ -27,7 +26,6 @@ class PickEmLambda(Construct):
             environment={
                 PICK_EM_TABLE_2: activities_table.table_name,
             },
-            reserved_concurrent_executions=3
         )
 
         activities_table.grant_read_write_data(self.function)

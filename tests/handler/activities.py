@@ -2,7 +2,7 @@ import unittest
 from http import HTTPStatus
 from unittest.mock import MagicMock, patch
 
-from common.constants.constants import EFFORT, INTEREST
+from constants import EFFORT, INTEREST
 from handlers.activity import (
     add_activity,
     edit_activity,

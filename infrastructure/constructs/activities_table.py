@@ -3,7 +3,7 @@ from aws_cdk import RemovalPolicy, aws_dynamodb as dynamodb
 
 from constructs import Construct
 
-from common.constants.constants import PK, SK
+from infrastructure.config_constants.constants import PK, SK
 
 
 class ActivitiesTable(Construct):

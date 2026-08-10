@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import TypedDict
 
-from common.constants.constants import *
+
+from constants.constants import ACTIVITY_ID, NAME, CATEGORY, INTEREST, EFFORT, ID
 
 
 class ActivityDict(TypedDict):
