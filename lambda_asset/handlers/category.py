@@ -1,12 +1,12 @@
 from http import HTTPStatus
 
-from constants import ACTIVITIES, CATEGORIES, ID
+from constants.constants import ACTIVITIES, CATEGORIES, ID
 from repository.activities import ActivitiesRepo
 
 
 def get_category_ids(
     repo: ActivitiesRepo,
-    user_id: str = 'stevebot'
+    user_id,
 ) -> dict:
     ids = repo.get_category_ids(user_id)
     return {CATEGORIES: ids}

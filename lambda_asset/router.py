@@ -8,6 +8,8 @@ from handlers.category import get_category_ids, get_category_activities
 from handlers.pick import get_pick
 from repository.activities import ActivitiesRepo
 
+from constants.constants import *
+
 
 RouteResponse = tuple[dict[str, Any], HTTPStatus]
 Router = Callable[[dict[str, Any]], RouteResponse]

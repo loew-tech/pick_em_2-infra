@@ -1,12 +1,10 @@
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 
+from constants.constants import CATEGORY_ID, PK, SK, ITEMS
 from models.models import Activity, Tier
 from repository.types import DynamoTable
 from repository.exceptions import RepositoryError
-
-
-from constants.constants import CATEGORY_ID, PK, SK, ITEMS
 
 
 class ActivitiesRepo:

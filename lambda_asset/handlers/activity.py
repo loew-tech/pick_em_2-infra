@@ -2,7 +2,7 @@ import uuid
 
 from http import HTTPStatus
 
-from constants import EFFORT, INTEREST
+from constants.constants import EFFORT, INTEREST
 from repository.activities import ActivitiesRepo
 from models.models import Activity, Tier
 
