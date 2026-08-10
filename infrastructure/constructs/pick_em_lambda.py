@@ -4,7 +4,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-from infrastructure.config_constants.constants import PICK_EM_TABLE_2
+from infrastructure.config_constants.constants import TABLE_NAME
 
 class PickEmLambda(Construct):
     """
@@ -24,7 +24,7 @@ class PickEmLambda(Construct):
             handler="app.handler",
             code=lambda_.Code.from_asset("lambda_asset"),
             environment={
-                PICK_EM_TABLE_2: activities_table.table_name,
+                TABLE_NAME: activities_table.table_name,
             },
         )
 

@@ -7,9 +7,9 @@ from repository.activities import ActivitiesRepo
 def get_category_ids(
     repo: ActivitiesRepo,
     user_id,
-) -> dict:
+) -> tuple[dict, HTTPStatus]:
     ids = repo.get_category_ids(user_id)
-    return {CATEGORIES: ids}
+    return {CATEGORIES: ids}, HTTPStatus.OK
 
 def get_category_activities(
     repo: ActivitiesRepo,

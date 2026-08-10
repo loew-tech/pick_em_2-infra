@@ -28,9 +28,7 @@ USER_ID = 'user_id'
 ITEMS = 'Items'
 
 # API GATEWAY
-REQUEST_CONTEXT = "requestContext"
-HTTP_STR = "http"
-METHOD = "method"
+HTTP_METHOD = "httpMethod"
 PATH_STR = "path"
 PATH_PARAMETERS = "pathParameters"
 BODY = "body"

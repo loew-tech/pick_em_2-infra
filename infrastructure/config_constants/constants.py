@@ -1,5 +1,5 @@
 # DB
 DYNAMO_RESOURCE = 'dynamodb'
-PICK_EM_TABLE_2 = "PickEmTable2"
+TABLE_NAME = "TABLE_NAME"
 PK = 'PK'
 SK = 'SK'

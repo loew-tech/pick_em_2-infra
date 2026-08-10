@@ -17,8 +17,8 @@ Router = Callable[[dict[str, Any]], RouteResponse]
 
 def router(activity_repo: ActivitiesRepo) -> Router:
     def route(event: dict[str, Any]) -> RouteResponse:
-        method = event[REQUEST_CONTEXT][HTTP_STR][METHOD]
-        path = event[REQUEST_CONTEXT][HTTP_STR][PATH_STR]
+        method = event[HTTP_METHOD]
+        path = event[PATH_STR]
 
         user_id = _get_user_id(event)
         if method == HTTPMethod.GET and path == CATEGORIES_PATH:
