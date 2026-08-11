@@ -29,7 +29,8 @@ class PickEmAuth(Construct):
         self.client = self.user_pool.add_client(
             PICK_EM_WEB_CLIENT,
             auth_flows=cognito.AuthFlow(
-                user_srp=True
+                user_srp=True,
+                user_password=True,
             ),
             generate_secret=False
         )

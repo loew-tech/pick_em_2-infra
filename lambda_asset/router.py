@@ -61,11 +61,4 @@ def router(activity_repo: ActivitiesRepo) -> Router:
 
 # @TODO implement using JWT or similar
 def _get_user_id(event) -> str:
-    return "stevebot"
-    # headers = event.get("headers", {})
-    # cookie_header = headers.get("Cookie", "")
-    #
-    # cookies = SimpleCookie()
-    # cookies.load(cookie_header)
-    #
-    # return cookies[USER_ID].value
+    return event[REQUEST_CONTEXT][AUTHORIZER][CLAIMS][SUB]
