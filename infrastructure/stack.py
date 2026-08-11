@@ -3,6 +3,7 @@ from constructs import Construct
 
 from infrastructure.constructs.activities_table import ActivitiesTable
 from infrastructure.constructs.pick_em_api import PickEmApi
+from infrastructure.constructs.pick_em_auth import PickEmAuth
 from infrastructure.constructs.pick_em_lambda import PickEmLambda
 
 
@@ -15,7 +16,15 @@ class PickEm2Stack(Stack):
 
         pick_em_lambda = PickEmLambda(self, 'PickEmLambda', activities_table=activities_table.table)
 
-        pick_em_api = PickEmApi(self, "PickEmApi", function=pick_em_lambda.function)
+        pick_em_auth = PickEmAuth(
+            self,
+            "PickEmAuth",
+        )
+
+        pick_em_api = PickEmApi(self,
+                                "PickEmApi",
+                                function=pick_em_lambda.function,
+                                user_pool=pick_em_auth.user_pool)
 
         CfnOutput(
             self,
@@ -23,4 +32,14 @@ class PickEm2Stack(Stack):
             value=pick_em_api.url,
         )
 
+        CfnOutput(
+            self,
+            "UserPoolId",
+            value=pick_em_auth.user_pool.user_pool_id,
+        )
 
+        CfnOutput(
+            self,
+            "UserPoolClientId",
+            value=pick_em_auth.client.user_pool_client_id,
+        )

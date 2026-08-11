@@ -3,12 +3,11 @@ from http import HTTPStatus, HTTPMethod
 from typing import Any
 from collections.abc import Callable
 
+from constants.constants import *
 from handlers.activity import add_activity, edit_activity, remove_activity
 from handlers.category import get_category_ids, get_category_activities
 from handlers.pick import get_pick
 from repository.activities import ActivitiesRepo
-
-from constants.constants import *
 
 
 RouteResponse = tuple[dict[str, Any], HTTPStatus]
@@ -63,3 +62,10 @@ def router(activity_repo: ActivitiesRepo) -> Router:
 # @TODO implement using JWT or similar
 def _get_user_id(event) -> str:
     return "stevebot"
+    # headers = event.get("headers", {})
+    # cookie_header = headers.get("Cookie", "")
+    #
+    # cookies = SimpleCookie()
+    # cookies.load(cookie_header)
+    #
+    # return cookies[USER_ID].value
