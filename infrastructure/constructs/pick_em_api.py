@@ -30,5 +30,10 @@ class PickEmApi(Construct):
                 authorizer=authorizer,
                 authorization_type=apigateway.AuthorizationType.COGNITO,
             ),
+            default_cors_preflight_options=apigateway.CorsOptions(
+                allow_origins=["http://localhost:5173"],
+                allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                allow_headers=["Authorization", "Content-Type"],
+            ),
         )
         self.url = self.api.url

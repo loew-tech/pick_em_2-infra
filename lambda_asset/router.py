@@ -59,6 +59,5 @@ def router(activity_repo: ActivitiesRepo) -> Router:
     return route
 
 
-# @TODO implement using JWT or similar
 def _get_user_id(event) -> str:
     return event[REQUEST_CONTEXT][AUTHORIZER][CLAIMS][SUB]

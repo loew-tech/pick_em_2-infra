@@ -28,10 +28,16 @@ USER_ID = 'user_id'
 ITEMS = 'Items'
 
 # API GATEWAY
+REQUEST_CONTEXT = "requestContext"
+HTTP_STR = "http"
 HTTP_METHOD = "httpMethod"
+METHOD = "method"
 PATH_STR = "path"
 PATH_PARAMETERS = "pathParameters"
 BODY = "body"
+AUTHORIZER = "authorizer"
+CLAIMS = "claims"
+SUB = "sub"
 
 # OS
 TABLE_NAME = "TABLE_NAME"

@@ -25,7 +25,15 @@ _router = router(_activity_repo)
 
 def handler(event, _):
     body, status = _router(event)
-    return _response(body, status)
+    # return _response(body, status)
+
+    return {
+        "statusCode": status,
+        "headers": {
+            "Access-Control-Allow-Origin": "http://localhost:5173",
+        },
+        "body": json.dumps(body),
+    }
 
 
 def _response(body, status):
