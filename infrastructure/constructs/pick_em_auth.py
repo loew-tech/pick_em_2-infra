@@ -16,6 +16,7 @@ class PickEmAuth(Construct):
                 username=True,
                 email=True
             ),
+            self_sign_up_enabled=True,
             auto_verify=cognito.AutoVerifiedAttrs(email=True),
             password_policy=cognito.PasswordPolicy(
                 min_length=8,
