@@ -27,11 +27,14 @@ def router(activity_repo: ActivitiesRepo) -> Router:
             body, status = get_category_activities(activity_repo, user_id, category_id)
         elif method == HTTPMethod.POST and f'{ACTIVITIES_PATH}/' in path:
             params = event[PATH_PARAMETERS]
-            body, status = add_activity(repository=activity_repo,
-                                        user_id=user_id,
-                                        category_id=params[CATEGORY_ID],
-                                        name=params[NAME],
-                                        body=json.loads(event[BODY]))
+            request_body = json.loads(event[BODY])
+            body, status = add_activity(
+                repository=activity_repo,
+                user_id=user_id,
+                category_id=params[CATEGORY_ID],
+                name=request_body[NAME],
+                body=request_body[BODY],
+            )
         elif method == HTTPMethod.POST and path == PICK_PATH:
             body, status = get_pick(
                 repo=activity_repo,
