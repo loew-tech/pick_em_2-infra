@@ -10,12 +10,8 @@ def api_gateway_event(
     body: dict | None = None,
 ) -> dict:
     return {
-        "requestContext": {
-            "http": {
-                "method": method,
-                "path": path,
-            }
-        },
+        "httpMethod": method.value,
+        "path": path,
         "pathParameters": path_parameters or {},
         "body": json.dumps(body) if body is not None else None,
     }

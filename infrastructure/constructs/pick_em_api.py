@@ -25,7 +25,7 @@ class PickEmApi(Construct):
             self,
             "PickEmApi",
             handler=function,
-            proxy=True,
+            proxy=False,
             default_method_options=apigateway.MethodOptions(
                 authorizer=authorizer,
                 authorization_type=apigateway.AuthorizationType.COGNITO,
@@ -36,4 +36,29 @@ class PickEmApi(Construct):
                 allow_headers=["Authorization", "Content-Type"],
             ),
         )
+
+        integration = apigateway.LambdaIntegration(function)
+
+        # /categories
+        categories = self.api.root.add_resource("categories")
+        categories.add_method("GET", integration)
+
+        # /categories/{category_id}
+        category = categories.add_resource("{category_id}")
+        category.add_method("GET", integration)
+
+        # /activities/{category_id}
+        activities = self.api.root.add_resource("activities")
+        category_activities = activities.add_resource("{category_id}")
+        category_activities.add_method("POST", integration)
+
+        # /activities/{category_id}/{activity_id}
+        activity = category_activities.add_resource("{activity_id}")
+        activity.add_method("PUT", integration)
+        activity.add_method("DELETE", integration)
+
+        # /pick
+        pick = self.api.root.add_resource("pick")
+        pick.add_method("POST", integration)
+
         self.url = self.api.url

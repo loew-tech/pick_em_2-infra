@@ -210,7 +210,11 @@ class TestRouter(unittest.TestCase):
             activity_id="abc123",
         )
 
-    def test_unknown_route(self):
+    @patch(
+        "lambda_asset.router._get_user_id",
+        return_value="user123",
+    )
+    def test_unknown_route(self, _get_user_id):
         event = api_gateway_event(
             HTTPMethod.GET,
             "/does/not/exist",

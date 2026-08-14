@@ -2,7 +2,7 @@ import unittest
 from http import HTTPStatus
 from unittest.mock import MagicMock, patch
 
-from constants import EFFORT, INTEREST
+from constants.constants import EFFORT, INTEREST
 from handlers.activity import (
     add_activity,
     edit_activity,
@@ -50,6 +50,28 @@ class TestActivityHandler(unittest.TestCase):
         self.assertEqual(activity.category, "movies")
         self.assertEqual(activity.interest, Tier.HIGH)
         self.assertEqual(activity.effort, Tier.LOW)
+
+    def test_add_activity_invalid_category_id(self):
+        body = {
+            INTEREST: Tier.HIGH.value,
+            EFFORT: Tier.LOW.value,
+        }
+
+        response, status = add_activity(
+            repository=self.repo,
+            user_id="steve",
+            category_id="physical/activity",
+            name="Running",
+            body=body,
+        )
+
+        self.assertEqual(status, HTTPStatus.BAD_REQUEST)
+        self.assertEqual(
+            response,
+            {"msg": "category name cannot contain '/'"},
+        )
+
+        self.repo.add_activity.assert_not_called()
 
     def test_edit_activity(self):
         self.repo.update_activity.return_value = True

@@ -7,8 +7,6 @@ from repository.activities import ActivitiesRepo
 from models.models import Activity, Tier
 
 
-
-
 def add_activity(
     repository: ActivitiesRepo,
     user_id: str,
@@ -19,6 +17,10 @@ def add_activity(
     """
     Add a new activity.
     """
+    if not _is_valid_category_id(category_id):
+        return {
+            "msg": "category name cannot contain '/'"
+        }, HTTPStatus.BAD_REQUEST
 
     activity = Activity(
         activity_id=str(uuid.uuid4()),
@@ -37,6 +39,9 @@ def add_activity(
         "msg": f"successfully added {name} to {category_id}"
     }, HTTPStatus.ACCEPTED
 
+
+def _is_valid_category_id(category_id: str) -> bool:
+    return "/" not in category_id
 
 
 def edit_activity(

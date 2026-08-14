@@ -2,7 +2,7 @@ import unittest
 from http import HTTPStatus
 from unittest.mock import MagicMock
 
-from constants import ACTIVITIES, CATEGORIES, ID
+from constants.constants import ACTIVITIES, CATEGORIES, ID
 from handlers.category import (
     get_category_activities,
     get_category_ids,
@@ -27,13 +27,13 @@ class TestCategoryHandler(unittest.TestCase):
         )
 
         self.assertEqual(
-            response,
-            {
+            ({
                 CATEGORIES: [
                     "movies",
                     "games",
                 ]
-            },
+            }, HTTPStatus.OK),
+            response
         )
 
         self.repo.get_category_ids.assert_called_once_with(
