@@ -25,13 +25,16 @@ _router = router(_activity_repo)
 
 def handler(event, _):
     body, status = _router(event)
-    return {
-        "statusCode": status,
+    response = {
+        "statusCode": status.value,
         "headers": {
             CONTENT_TYPE: APPLICATION_JSON,
+            "Access-Control-Allow-Origin": "http://localhost:5173",
         },
         "body": json.dumps(body),
     }
+    print(f'{response=}')
+    return response
 
 
 def _response(body, status):
