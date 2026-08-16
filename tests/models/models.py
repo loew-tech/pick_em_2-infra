@@ -1,7 +1,7 @@
 import unittest
 from dataclasses import FrozenInstanceError
 
-from constants import (
+from constants.constants import (
     ACTIVITY_ID,
     CATEGORY,
     EFFORT,

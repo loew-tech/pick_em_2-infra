@@ -1,18 +1,18 @@
 from http import HTTPStatus
 
 from constants.constants import ACTIVITIES, CATEGORIES, ID
-from repository.activities import ActivitiesRepo
+from repository.categories import CategoriesRepo
 
 
 def get_category_ids(
-    repo: ActivitiesRepo,
+    repo: CategoriesRepo,
     user_id,
 ) -> tuple[dict, HTTPStatus]:
     ids = repo.get_category_ids(user_id)
     return {CATEGORIES: ids}, HTTPStatus.OK
 
 def get_category_activities(
-    repo: ActivitiesRepo,
+    repo: CategoriesRepo,
     user_id: str,
     category_id: str
 ) -> tuple[dict, HTTPStatus]:

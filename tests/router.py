@@ -10,8 +10,9 @@ from tests.helpers import api_gateway_event
 class TestRouter(unittest.TestCase):
 
     def setUp(self):
-        self.repo = MagicMock()
-        self.router = router(self.repo)
+        self.category_repo = MagicMock()
+        self.activity_repo = MagicMock()
+        self.router = router(self.category_repo, self.activity_repo)
 
     @patch(
         "lambda_asset.router._get_user_id",
@@ -42,7 +43,7 @@ class TestRouter(unittest.TestCase):
         )
 
         get_category_ids.assert_called_once_with(
-            self.repo,
+            self.category_repo,
             "user123",
         )
 
@@ -95,7 +96,7 @@ class TestRouter(unittest.TestCase):
         )
 
         get_activity.assert_called_once_with(
-            repository=self.repo,
+            repository=self.activity_repo,
             user_id="user123",
             category_id="movies",
             activity_id="abc123",
@@ -138,7 +139,7 @@ class TestRouter(unittest.TestCase):
         )
 
         get_activity.assert_called_once_with(
-            repository=self.repo,
+            repository=self.activity_repo,
             user_id="user123",
             category_id="movies",
             activity_id="abc123",
@@ -175,7 +176,7 @@ class TestRouter(unittest.TestCase):
         self.assertEqual(status, HTTPStatus.OK)
 
         get_category_activities.assert_called_once_with(
-            self.repo,
+            self.category_repo,
             "user123",
             "movies",
         )
@@ -218,7 +219,7 @@ class TestRouter(unittest.TestCase):
         )
 
         add_activity.assert_called_once_with(
-            repository=self.repo,
+            repository=self.activity_repo,
             user_id="user123",
             category_id="movies",
             name="Dune",
@@ -263,7 +264,7 @@ class TestRouter(unittest.TestCase):
         )
 
         edit_activity.assert_called_once_with(
-            repository=self.repo,
+            repository=self.activity_repo,
             user_id="user123",
             category_id="movies",
             activity_id="abc123",
@@ -304,7 +305,7 @@ class TestRouter(unittest.TestCase):
         )
 
         remove_activity.assert_called_once_with(
-            repository=self.repo,
+            repository=self.activity_repo,
             user_id="user123",
             category_id="movies",
             activity_id="abc123",
@@ -376,7 +377,7 @@ class TestRouter(unittest.TestCase):
         )
 
         get_pick.assert_called_once_with(
-            repo=self.repo,
+            repo=self.activity_repo,
             user_id="user123",
             body={
                 "categories": [

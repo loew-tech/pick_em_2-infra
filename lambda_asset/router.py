@@ -8,21 +8,24 @@ from handlers.activity import add_activity, get_activity, edit_activity, remove_
 from handlers.category import get_category_ids, get_category_activities
 from handlers.pick import get_pick
 from repository.activities import ActivitiesRepo
+from repository.categories import CategoriesRepo
 
 
 RouteResponse = tuple[dict[str, Any], HTTPStatus]
 Router = Callable[[dict[str, Any]], RouteResponse]
 
 
-def router(activity_repo: ActivitiesRepo) -> Router:
+def router(categories_repo: CategoriesRepo,
+           activity_repo: ActivitiesRepo) -> Router:
     def route(event: dict[str, Any]) -> RouteResponse:
         method = event[HTTP_METHOD]
         path = event[PATH_STR]
+        print(f'{method=} {path=}')
 
         user_id = _get_user_id(event)
         if method == HTTPMethod.GET and path == CATEGORIES_PATH:
-            body, status = get_category_ids(activity_repo, user_id)
-        elif method == HTTPMethod.GET and f'{ACTIVITIES_PATH}/' in path:
+            body, status = get_category_ids(categories_repo, user_id)
+        elif method == HTTPMethod.GET and path.startswith(f"{CATEGORIES_PATH}/") and f"{ACTIVITIES_PATH}/" in path:
             params = event[PATH_PARAMETERS]
             body, status = get_activity(
                 repository=activity_repo,
@@ -32,7 +35,7 @@ def router(activity_repo: ActivitiesRepo) -> Router:
             )
         elif method == HTTPMethod.GET and path.startswith(f'{CATEGORIES_PATH}/'):
             category_id = event[PATH_PARAMETERS][CATEGORY_ID]
-            body, status = get_category_activities(activity_repo, user_id, category_id)
+            body, status = get_category_activities(categories_repo, user_id, category_id)
         elif method == HTTPMethod.POST and f'{ACTIVITIES_PATH}/' in path:
             params = event[PATH_PARAMETERS]
             request_body = json.loads(event[BODY])
