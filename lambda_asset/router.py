@@ -15,30 +15,55 @@ RouteResponse = tuple[dict[str, Any], HTTPStatus]
 Router = Callable[[dict[str, Any]], RouteResponse]
 
 
-def router(categories_repo: CategoriesRepo,
-           activity_repo: ActivitiesRepo) -> Router:
+def router(
+    categories_repo: CategoriesRepo,
+    activity_repo: ActivitiesRepo,
+) -> Router:
     def route(event: dict[str, Any]) -> RouteResponse:
         method = event[HTTP_METHOD]
         path = event[PATH_STR]
-        print(f'{method=} {path=}')
-
         user_id = _get_user_id(event)
+
         if method == HTTPMethod.GET and path == CATEGORIES_PATH:
-            body, status = get_category_ids(categories_repo, user_id)
-        elif method == HTTPMethod.GET and path.startswith(f"{CATEGORIES_PATH}/") and f"{ACTIVITIES_PATH}/" in path:
+            body, status = get_category_ids(
+                categories_repo,
+                user_id,
+            )
+
+        elif (
+            method == HTTPMethod.GET
+            and path.startswith(f"{CATEGORIES_PATH}/")
+            and f"{ACTIVITIES_PATH}/" in path
+        ):
             params = event[PATH_PARAMETERS]
+
             body, status = get_activity(
                 repository=activity_repo,
                 user_id=user_id,
                 category_id=params[CATEGORY_ID],
                 activity_id=params[ACTIVITY_ID],
             )
-        elif method == HTTPMethod.GET and path.startswith(f'{CATEGORIES_PATH}/'):
+
+        elif (
+            method == HTTPMethod.GET
+            and path.startswith(f"{CATEGORIES_PATH}/")
+        ):
             category_id = event[PATH_PARAMETERS][CATEGORY_ID]
-            body, status = get_category_activities(categories_repo, user_id, category_id)
-        elif method == HTTPMethod.POST and f'{ACTIVITIES_PATH}/' in path:
+
+            body, status = get_category_activities(
+                categories_repo,
+                user_id,
+                category_id,
+            )
+
+        elif (
+            method == HTTPMethod.POST
+            and path.startswith(f"{CATEGORIES_PATH}/")
+            and path.endswith(ACTIVITIES_PATH)
+        ):
             params = event[PATH_PARAMETERS]
             request_body = json.loads(event[BODY])
+
             body, status = add_activity(
                 repository=activity_repo,
                 user_id=user_id,
@@ -46,27 +71,48 @@ def router(categories_repo: CategoriesRepo,
                 name=request_body[NAME],
                 body=request_body[BODY],
             )
+
         elif method == HTTPMethod.POST and path == PICK_PATH:
             body, status = get_pick(
-                repo=activity_repo,
+                repo=categories_repo,
                 user_id=user_id,
-                body=json.loads(event[BODY])
+                body=json.loads(event[BODY]),
             )
-        elif method == HTTPMethod.PUT and f'{ACTIVITIES_PATH}/' in path:
+
+        elif (
+            method == HTTPMethod.PUT
+            and path.startswith(f"{CATEGORIES_PATH}/")
+            and f"{ACTIVITIES_PATH}/" in path
+        ):
             params = event[PATH_PARAMETERS]
-            body, status = edit_activity(repository=activity_repo,
-                                         user_id=user_id,
-                                         category_id=params[CATEGORY_ID],
-                                         activity_id=params[ACTIVITY_ID],
-                                         body=json.loads(event[BODY]))
-        elif method == HTTPMethod.DELETE and f'{ACTIVITIES_PATH}/' in path:
+
+            body, status = edit_activity(
+                repository=activity_repo,
+                user_id=user_id,
+                category_id=params[CATEGORY_ID],
+                activity_id=params[ACTIVITY_ID],
+                body=json.loads(event[BODY]),
+            )
+
+        elif (
+            method == HTTPMethod.DELETE
+            and path.startswith(f"{CATEGORIES_PATH}/")
+            and f"{ACTIVITIES_PATH}/" in path
+        ):
             params = event[PATH_PARAMETERS]
-            body, status = remove_activity(repository=activity_repo,
-                                           user_id=user_id,
-                                           category_id=params[CATEGORY_ID],
-                                           activity_id=params[ACTIVITY_ID])
+
+            body, status = remove_activity(
+                repository=activity_repo,
+                user_id=user_id,
+                category_id=params[CATEGORY_ID],
+                activity_id=params[ACTIVITY_ID],
+            )
+
         else:
-            body, status = {"msg": "ROUTE NOT FOUND"}, HTTPStatus.NOT_FOUND
+            body, status = (
+                {"msg": "ROUTE NOT FOUND"},
+                HTTPStatus.NOT_FOUND,
+            )
 
         return body, status
 

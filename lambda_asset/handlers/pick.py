@@ -2,11 +2,11 @@ from http import HTTPStatus
 
 from constants.constants import CATEGORIES, EFFORT, INTEREST
 from models.models import Tier
-from repository.activities import ActivitiesRepo
+from repository.categories import CategoriesRepo
 from services.pick import pick
 
 
-def get_pick(repo: ActivitiesRepo, user_id: str, body: dict) -> tuple[dict, HTTPStatus]:
+def get_pick(repo: CategoriesRepo, user_id: str, body: dict) -> tuple[dict, HTTPStatus]:
     categories = body[CATEGORIES]
     interest = Tier(body[INTEREST])
     effort = Tier(body[EFFORT])

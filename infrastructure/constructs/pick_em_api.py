@@ -32,8 +32,17 @@ class PickEmApi(Construct):
             ),
             default_cors_preflight_options=apigateway.CorsOptions(
                 allow_origins=["http://localhost:5173"],
-                allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-                allow_headers=["Authorization", "Content-Type"],
+                allow_methods=[
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "OPTIONS",
+                ],
+                allow_headers=[
+                    "Authorization",
+                    "Content-Type",
+                ],
             ),
         )
 
@@ -47,13 +56,13 @@ class PickEmApi(Construct):
         category = categories.add_resource("{category_id}")
         category.add_method("GET", integration)
 
-        # /activities/{category_id}
-        activities = self.api.root.add_resource("activities")
-        category_activities = activities.add_resource("{category_id}")
+        # /categories/{category_id}/activities
+        category_activities = category.add_resource("activities")
         category_activities.add_method("POST", integration)
 
-        # /activities/{category_id}/{activity_id}
+        # /categories/{category_id}/activities/{activity_id}
         activity = category_activities.add_resource("{activity_id}")
+        activity.add_method("GET", integration)
         activity.add_method("PUT", integration)
         activity.add_method("DELETE", integration)
 

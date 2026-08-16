@@ -24,47 +24,6 @@ class TestActivitiesRepo(unittest.TestCase):
         self.table = MagicMock()
         self.repo = ActivitiesRepo(self.table)
 
-    def test_get_activities(self):
-        self.repo.get_category_activities = MagicMock(
-            side_effect=[
-                [
-                    Activity(
-                        "1",
-                        "Dune",
-                        "movies",
-                        Tier.HIGH,
-                        Tier.LOW,
-                    )
-                ],
-                [
-                    Activity(
-                        "2",
-                        "Chess",
-                        "games",
-                        Tier.MEDIUM,
-                        Tier.MEDIUM,
-                    )
-                ],
-            ]
-        )
-
-        activities = self.repo.get_activities(
-            "steve",
-            ["movies", "games"],
-        )
-
-        self.assertEqual(len(activities), 2)
-
-        self.repo.get_category_activities.assert_any_call(
-            "steve",
-            "movies",
-        )
-
-        self.repo.get_category_activities.assert_any_call(
-            "steve",
-            "games",
-        )
-
     def test_get_activity(self):
         self.table.get_item.return_value = {
             "Item": {

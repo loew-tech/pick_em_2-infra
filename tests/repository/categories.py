@@ -8,6 +8,7 @@ from constants.constants import (
     ITEMS,
     NAME,
 )
+from models.models import Activity, Tier
 from repository.categories import CategoriesRepo
 
 
@@ -68,6 +69,47 @@ class TestActivitiesRepo(unittest.TestCase):
         )
 
         self.table.query.assert_called_once()
+
+    def test_get_activities(self):
+        self.repo.get_category_activities = MagicMock(
+            side_effect=[
+                [
+                    Activity(
+                        "1",
+                        "Dune",
+                        "movies",
+                        Tier.HIGH,
+                        Tier.LOW,
+                    )
+                ],
+                [
+                    Activity(
+                        "2",
+                        "Chess",
+                        "games",
+                        Tier.MEDIUM,
+                        Tier.MEDIUM,
+                    )
+                ],
+            ]
+        )
+
+        activities = self.repo.get_activities(
+            "steve",
+            ["movies", "games"],
+        )
+
+        self.assertEqual(len(activities), 2)
+
+        self.repo.get_category_activities.assert_any_call(
+            "steve",
+            "movies",
+        )
+
+        self.repo.get_category_activities.assert_any_call(
+            "steve",
+            "games",
+        )
 
 
 if __name__ == "__main__":

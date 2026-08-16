@@ -135,6 +135,7 @@ class TestPick(unittest.TestCase):
                 effort=Tier.HIGH,
             )
 
+        self.assertIsNotNone(result)
         self.assertEqual(result.name, "Second")
 
 
