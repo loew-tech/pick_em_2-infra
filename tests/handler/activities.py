@@ -3,10 +3,11 @@ from http import HTTPStatus
 from unittest.mock import MagicMock, patch
 
 from constants.constants import EFFORT, INTEREST
+from handlers import category
 from handlers.activity import (
     add_activity,
     edit_activity,
-    remove_activity,
+    remove_activity, get_activity,
 )
 from models.models import Activity, Tier
 
@@ -72,6 +73,57 @@ class TestActivityHandler(unittest.TestCase):
         )
 
         self.repo.add_activity.assert_not_called()
+
+    def test_get_activity(self):
+        activity = Activity(
+            activity_id="abc",
+            name="Dune",
+            category="movies",
+            interest=Tier.HIGH,
+            effort=Tier.LOW,
+        )
+        self.repo.get_activity.return_value = activity
+
+        response, status = get_activity(
+            repository=self.repo,
+            user_id="steve",
+            category_id="movies",
+            activity_id="abc",
+        )
+
+        self.assertEqual(status, HTTPStatus.OK)
+        self.assertEqual(
+            activity.to_dict(),
+            response,
+        )
+
+        self.repo.get_activity.assert_called_once_with(
+            user_id="steve",
+            category_id="movies",
+            activity_id="abc",
+        )
+
+    def test_get_activity_not_found(self):
+        self.repo.get_activity.return_value = None
+
+        response, status = get_activity(
+            repository=self.repo,
+            user_id="steve",
+            category_id="movies",
+            activity_id="abc",
+        )
+
+        self.assertEqual(status, HTTPStatus.NOT_FOUND)
+        self.assertEqual(
+            {"msg": "activity abc not found"},
+            response,
+        )
+
+        self.repo.get_activity.assert_called_once_with(
+            user_id="steve",
+            category_id="movies",
+            activity_id="abc",
+        )
 
     def test_edit_activity(self):
         self.repo.update_activity.return_value = True

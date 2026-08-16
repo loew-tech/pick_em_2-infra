@@ -31,6 +31,7 @@ class ActivitiesRepo:
                 f"{exc.response['Error']['Message']}"
             ) from exc
 
+        # @TODO: remove debug print
         print(f'{response.get(ITEMS, ())=}')
         return sorted({item[CATEGORY] for item in response.get(ITEMS, ())})
 
@@ -44,6 +45,21 @@ class ActivitiesRepo:
 
         return sorted((Activity.from_dict(item) for item in response.get(ITEMS, ())),
                       key=lambda activity: activity.name)
+
+    def get_activity(self, user_id: str, category_id: str, activity_id: str) -> Activity | None:
+        response = self._table.get_item(
+            Key={
+                PK: f"USER#{user_id}",
+                SK: f"CATEGORY#{category_id}#ACTIVITY#{activity_id}",
+            }
+        )
+
+        item = response.get("Item")
+
+        if item is None:
+            return None
+
+        return Activity.from_dict(item)
 
     def get_activities(self, user_id: str, category_ids: list[str]) -> list[Activity]:
         activities = []

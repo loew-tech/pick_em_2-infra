@@ -33,6 +33,8 @@ def handler(event, _):
         },
         "body": json.dumps(body),
     }
+
+    # @TODO: remove debug print
     print(f'{response=}')
     return response
 

@@ -4,7 +4,7 @@ from http import HTTPStatus
 
 from constants.constants import EFFORT, INTEREST
 from repository.activities import ActivitiesRepo
-from models.models import Activity, Tier
+from models.models import Activity, Tier, ActivityDict
 
 
 def add_activity(
@@ -38,6 +38,29 @@ def add_activity(
     return {
         "msg": f"successfully added {name} to {category_id}"
     }, HTTPStatus.ACCEPTED
+
+
+def get_activity(
+    repository: ActivitiesRepo,
+    user_id: str,
+    category_id: str,
+    activity_id: str,
+) -> tuple[dict[str, str], HTTPStatus] | tuple[ActivityDict, HTTPStatus]:
+    """
+    Get an activity by ID.
+    """
+    activity = repository.get_activity(
+        user_id=user_id,
+        category_id=category_id,
+        activity_id=activity_id,
+    )
+
+    if activity is None:
+        return {
+            "msg": f"activity {activity_id} not found"
+        }, HTTPStatus.NOT_FOUND
+
+    return activity.to_dict(), HTTPStatus.OK
 
 
 def _is_valid_category_id(category_id: str) -> bool:

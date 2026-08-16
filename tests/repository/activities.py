@@ -27,9 +27,9 @@ class TestActivitiesRepo(unittest.TestCase):
     def test_get_category_ids(self):
         self.table.query.return_value = {
             ITEMS: [
-                {CATEGORY_ID: "movies"},
-                {CATEGORY_ID: "games"},
-                {CATEGORY_ID: "movies"},
+                {CATEGORY: "movies"},
+                {CATEGORY: "games"},
+                {CATEGORY: "movies"},
             ]
         }
 
@@ -41,7 +41,7 @@ class TestActivitiesRepo(unittest.TestCase):
 
         self.assertEqual(
             kwargs["ProjectionExpression"],
-            CATEGORY_ID,
+            CATEGORY,
         )
 
     def test_get_category_activities(self):
@@ -115,6 +115,59 @@ class TestActivitiesRepo(unittest.TestCase):
         self.repo.get_category_activities.assert_any_call(
             "steve",
             "games",
+        )
+
+    def test_get_activity(self):
+        self.table.get_item.return_value = {
+            "Item": {
+                "activity_id": "abc",
+                NAME: "Dune",
+                CATEGORY: "movies",
+                INTEREST: Tier.HIGH.value,
+                EFFORT: Tier.LOW.value,
+            }
+        }
+
+        activity = self.repo.get_activity(
+            "steve",
+            "movies",
+            "abc",
+        )
+
+        self.assertEqual(
+            activity,
+            Activity(
+                activity_id="abc",
+                name="Dune",
+                category="movies",
+                interest=Tier.HIGH,
+                effort=Tier.LOW,
+            ),
+        )
+
+        self.table.get_item.assert_called_once_with(
+            Key={
+                PK: "USER#steve",
+                SK: "CATEGORY#movies#ACTIVITY#abc",
+            }
+        )
+
+    def test_get_activity_not_found(self):
+        self.table.get_item.return_value = {}
+
+        activity = self.repo.get_activity(
+            "steve",
+            "movies",
+            "abc",
+        )
+
+        self.assertIsNone(activity)
+
+        self.table.get_item.assert_called_once_with(
+            Key={
+                PK: "USER#steve",
+                SK: "CATEGORY#movies#ACTIVITY#abc",
+            }
         )
 
     def test_add_activity(self):

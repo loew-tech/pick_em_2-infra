@@ -50,6 +50,104 @@ class TestRouter(unittest.TestCase):
         "lambda_asset.router._get_user_id",
         return_value="user123",
     )
+    @patch("lambda_asset.router.get_activity")
+    def test_get_activity(
+            self,
+            get_activity,
+            _get_user_id,
+    ):
+        get_activity.return_value = (
+            {
+                "activity_id": "abc123",
+                "name": "Dune",
+                "category": "movies",
+                "interest": Tier.HIGH.value,
+                "effort": Tier.LOW.value,
+            },
+            HTTPStatus.OK,
+        )
+
+        event = api_gateway_event(
+            HTTPMethod.GET,
+            "/categories/movies/activities/abc123",
+            path_parameters={
+                "category_id": "movies",
+                "activity_id": "abc123",
+            },
+        )
+
+        body, status = self.router(event)
+
+        self.assertEqual(
+            HTTPStatus.OK,
+            status,
+        )
+
+        self.assertEqual(
+            {
+                "activity_id": "abc123",
+                "name": "Dune",
+                "category": "movies",
+                "interest": Tier.HIGH.value,
+                "effort": Tier.LOW.value,
+            },
+            body,
+        )
+
+        get_activity.assert_called_once_with(
+            repository=self.repo,
+            user_id="user123",
+            category_id="movies",
+            activity_id="abc123",
+        )
+
+    @patch(
+        "lambda_asset.router._get_user_id",
+        return_value="user123",
+    )
+    @patch("lambda_asset.router.get_activity")
+    def test_get_activity_not_found(
+            self,
+            get_activity,
+            _get_user_id,
+    ):
+        get_activity.return_value = (
+            {"msg": "activity abc123 not found"},
+            HTTPStatus.NOT_FOUND,
+        )
+
+        event = api_gateway_event(
+            HTTPMethod.GET,
+            "/categories/movies/activities/abc123",
+            path_parameters={
+                "category_id": "movies",
+                "activity_id": "abc123",
+            },
+        )
+
+        body, status = self.router(event)
+
+        self.assertEqual(
+            HTTPStatus.NOT_FOUND,
+            status,
+        )
+
+        self.assertEqual(
+            {"msg": "activity abc123 not found"},
+            body,
+        )
+
+        get_activity.assert_called_once_with(
+            repository=self.repo,
+            user_id="user123",
+            category_id="movies",
+            activity_id="abc123",
+        )
+
+    @patch(
+        "lambda_asset.router._get_user_id",
+        return_value="user123",
+    )
     @patch("lambda_asset.router.get_category_activities")
     def test_get_category_activities(
         self,
@@ -102,11 +200,13 @@ class TestRouter(unittest.TestCase):
             "/categories/movies/activities/Dune",
             path_parameters={
                 "category_id": "movies",
-                "name": "Dune",
             },
             body={
-                "interest": "HIGH",
-                "effort": "LOW",
+                "name": "Dune",
+                "body": {
+                    "interest": Tier.HIGH.value,
+                    "effort": Tier.LOW.value,
+                },
             },
         )
 
@@ -123,8 +223,8 @@ class TestRouter(unittest.TestCase):
             category_id="movies",
             name="Dune",
             body={
-                "interest": "HIGH",
-                "effort": "LOW",
+                "interest": Tier.HIGH.value,
+                "effort": Tier.LOW.value,
             },
         )
 

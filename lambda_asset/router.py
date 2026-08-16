@@ -4,7 +4,7 @@ from typing import Any
 from collections.abc import Callable
 
 from constants.constants import *
-from handlers.activity import add_activity, edit_activity, remove_activity
+from handlers.activity import add_activity, get_activity, edit_activity, remove_activity
 from handlers.category import get_category_ids, get_category_activities
 from handlers.pick import get_pick
 from repository.activities import ActivitiesRepo
@@ -22,6 +22,14 @@ def router(activity_repo: ActivitiesRepo) -> Router:
         user_id = _get_user_id(event)
         if method == HTTPMethod.GET and path == CATEGORIES_PATH:
             body, status = get_category_ids(activity_repo, user_id)
+        elif method == HTTPMethod.GET and f'{ACTIVITIES_PATH}/' in path:
+            params = event[PATH_PARAMETERS]
+            body, status = get_activity(
+                repository=activity_repo,
+                user_id=user_id,
+                category_id=params[CATEGORY_ID],
+                activity_id=params[ACTIVITY_ID],
+            )
         elif method == HTTPMethod.GET and path.startswith(f'{CATEGORIES_PATH}/'):
             category_id = event[PATH_PARAMETERS][CATEGORY_ID]
             body, status = get_category_activities(activity_repo, user_id, category_id)
