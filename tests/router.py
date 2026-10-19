@@ -236,6 +236,141 @@ class TestRouter(unittest.TestCase):
         "lambda_asset.router._get_user_id",
         return_value="user123",
     )
+    @patch("lambda_asset.router.add_activities")
+    def test_add_activities(
+            self,
+            add_activities,
+            _get_user_id,
+    ):
+        add_activities.return_value = (
+            {
+                "msg": "successfully added 2 activities to movies",
+                "activities": [
+                    {
+                        "activity_id": "abc123",
+                        "name": "Dune",
+                        "category": "movies",
+                        "interest": Tier.HIGH.value,
+                        "effort": Tier.LOW.value,
+                    },
+                    {
+                        "activity_id": "def456",
+                        "name": "Arrival",
+                        "category": "movies",
+                        "interest": Tier.MEDIUM.value,
+                        "effort": Tier.HIGH.value,
+                    },
+                ],
+            },
+            HTTPStatus.CREATED,
+        )
+
+        activities = [
+            {
+                "name": "Dune",
+                "interest": Tier.HIGH.value,
+                "effort": Tier.LOW.value,
+            },
+            {
+                "name": "Arrival",
+                "interest": Tier.MEDIUM.value,
+                "effort": Tier.HIGH.value,
+            },
+        ]
+
+        event = api_gateway_event(
+            HTTPMethod.POST,
+            "/categories/movies/activities/bulk",
+            path_parameters={
+                "category_id": "movies",
+            },
+            body={
+                "activities": activities,
+            },
+        )
+
+        body, status = self.router(event)
+
+        self.assertEqual(status, HTTPStatus.CREATED)
+        self.assertEqual(
+            body,
+            {
+                "msg": "successfully added 2 activities to movies",
+                "activities": [
+                    {
+                        "activity_id": "abc123",
+                        "name": "Dune",
+                        "category": "movies",
+                        "interest": Tier.HIGH.value,
+                        "effort": Tier.LOW.value,
+                    },
+                    {
+                        "activity_id": "def456",
+                        "name": "Arrival",
+                        "category": "movies",
+                        "interest": Tier.MEDIUM.value,
+                        "effort": Tier.HIGH.value,
+                    },
+                ],
+            },
+        )
+
+        add_activities.assert_called_once_with(
+            repository=self.activity_repo,
+            user_id="user123",
+            category_id="movies",
+            body={
+                "activities": activities,
+            },
+        )
+
+    @patch(
+        "lambda_asset.router._get_user_id",
+        return_value="user123",
+    )
+    @patch("lambda_asset.router.add_activities")
+    def test_add_activities_invalid_request(
+            self,
+            add_activities,
+            _get_user_id,
+    ):
+        add_activities.return_value = (
+            {"msg": "activities must be a non-empty list"},
+            HTTPStatus.BAD_REQUEST,
+        )
+
+        event = api_gateway_event(
+            HTTPMethod.POST,
+            "/categories/movies/activities/bulk",
+            path_parameters={
+                "category_id": "movies",
+            },
+            body={
+                "activities": [],
+            },
+        )
+
+        body, status = self.router(event)
+
+        self.assertEqual(status, HTTPStatus.BAD_REQUEST)
+        self.assertEqual(
+            body,
+            {"msg": "activities must be a non-empty list"},
+        )
+
+        add_activities.assert_called_once_with(
+            repository=self.activity_repo,
+            user_id="user123",
+            category_id="movies",
+            body={
+                "activities": [],
+            },
+        )
+
+    @patch(
+        "lambda_asset.router._get_user_id",
+        return_value="user123",
+    )
     @patch("lambda_asset.router.edit_activity")
     def test_edit_activity(
         self,
