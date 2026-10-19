@@ -48,6 +48,27 @@ class ActivitiesRepo:
                 f"{exc.response['Error']['Message']}"
             ) from exc
 
+    def add_activities(self, user_id: str, activities: list[Activity]) -> None:
+        try:
+            with self._table.batch_writer() as batch:
+                for activity in activities:
+                    batch.put_item(
+                        Item={
+                            PK: f"USER#{user_id}",
+                            SK: (
+                                f"CATEGORY#{activity.category}"
+                                f"#ACTIVITY#{activity.activity_id}"
+                            ),
+                            **activity.to_dict(),
+                        }
+                    )
+        except ClientError as exc:
+            raise RepositoryError(
+                f"Failed to add activities for {user_id}: "
+                f"{exc.response['Error']['Code']} - "
+                f"{exc.response['Error']['Message']}"
+            ) from exc
+
     def update_activity(
             self,
             user_id: str,

@@ -4,7 +4,7 @@ from typing import Any
 from collections.abc import Callable
 
 from constants.constants import *
-from handlers.activity import add_activity, get_activity, edit_activity, remove_activity
+from handlers.activity import add_activity, get_activity, edit_activity, remove_activity, add_activities
 from handlers.category import get_category_ids, get_category_activities
 from handlers.pick import get_pick
 from repository.activities import ActivitiesRepo
@@ -28,6 +28,21 @@ def router(
             body, status = get_category_ids(
                 categories_repo,
                 user_id,
+            )
+
+        elif (
+                method == HTTPMethod.POST
+                and path.startswith(f"{CATEGORIES_PATH}/")
+                and path.endswith(f"{ACTIVITIES_PATH}/bulk")
+        ):
+            params = event[PATH_PARAMETERS]
+            request_body = json.loads(event[BODY])
+
+            body, status = add_activities(
+                repository=activity_repo,
+                user_id=user_id,
+                category_id=params[CATEGORY_ID],
+                body=request_body,
             )
 
         elif (
