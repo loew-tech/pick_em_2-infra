@@ -137,9 +137,10 @@ class TestActivityHandler(unittest.TestCase):
         )
 
         self.assertEqual(
-            response[ACTIVITIES],
-            [activity.to_dict() for activity in activities],
+            response,
+            {"msg": "successfully added 2 activities to movies"},
         )
+        self.assertNotIn(ACTIVITIES, response)
 
     def test_add_activities_invalid_category_id(self):
         response, status = add_activities(

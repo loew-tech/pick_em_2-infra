@@ -111,8 +111,7 @@ def add_activities(
     )
 
     return {
-        "msg": f"successfully added {len(activities)} activities to {category_id}",
-        ACTIVITIES: [activity.to_dict() for activity in activities],
+        "msg": f"successfully added {len(activities)} activities to {category_id}"
     }, HTTPStatus.CREATED
 
 
