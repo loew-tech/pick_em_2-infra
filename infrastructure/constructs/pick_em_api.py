@@ -60,6 +60,10 @@ class PickEmApi(Construct):
         category_activities = category.add_resource("activities")
         category_activities.add_method("POST", integration)
 
+        # /categories/{category_id}/activities/bulk
+        bulk_activities = category_activities.add_resource("bulk")
+        bulk_activities.add_method("POST", integration)
+
         # /categories/{category_id}/activities/{activity_id}
         activity = category_activities.add_resource("{activity_id}")
         activity.add_method("GET", integration)
